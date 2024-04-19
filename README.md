@@ -223,3 +223,16 @@ $ docker push 027485240632.dkr.ecr.eu-central-1.amazonaws.com/sysblink-api:prod
 $ docker push 027485240632.dkr.ecr.eu-central-1.amazonaws.com/sysblink-client:prod
 
 ```
+
+
+###  Needs to create ALB
+
+Navigate to Amazon EC2 --> Load Balancers --> Create Load Balancer
+
+
+### Create Target groups
+
+### Create Listener and set rules to specific target groups
+
+
+### Update codebuild REACT_APP_API_SERVICE_URL

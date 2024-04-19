@@ -37,7 +37,7 @@ docker push 027485240632.dkr.ecr.eu-central-1.amazonaws.com/sysblink-api:dev
 ## Create prod docker build
 
 ### DB
-services/users/db/Dockerfile
+services/db/Dockerfile
 ```
 # pull official base image
 FROM postgres:14-alpine
@@ -167,7 +167,7 @@ services:
 
   api-db:
     build:
-      context: ./services/users/src/db
+      context: ./services/src/db
       dockerfile: Dockerfile
     expose:
       - 5432

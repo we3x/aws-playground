@@ -19,7 +19,7 @@ services:
 
   api-db:
     build:
-      context: ./services/users/db
+      context: ./services/db
       dockerfile: Dockerfile
     expose:
       - 5432

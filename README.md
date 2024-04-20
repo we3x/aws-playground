@@ -13,7 +13,7 @@ docker build \
 ### Client
 ```
 docker build \
-        -f services/users/Dockerfile \
+        -f services/client/Dockerfile \
         -t 027485240632.dkr.ecr.eu-central-1.amazonaws.com/sysblink-client:dev \
         ./services/client
 ```
@@ -167,7 +167,7 @@ services:
 
   api-db:
     build:
-      context: ./services/src/db
+      context: ./services/db
       dockerfile: Dockerfile
     expose:
       - 5432
@@ -236,3 +236,37 @@ Navigate to Amazon EC2 --> Load Balancers --> Create Load Balancer
 
 
 ### Update codebuild REACT_APP_API_SERVICE_URL
+
+## Create RDS DB
+
+Check status of db
+
+```
+aws --region eu-central-1 rds describe-db-instances \
+        --db-instance-identifier sysblink-db \
+        --query 'DBInstances[].{DBInstanceStatus:DBInstanceStatus}'
+```
+
+
+Get db address
+```
+aws --region eu-central-1 rds describe-db-instances \
+  --db-instance-identifier sysblink-db \
+  --query 'DBInstances[].{Address:Endpoint.Address}'
+```
+
+Connection string
+```
+postgres://webapp:rnPf1FLqNYv3RZMkvD8E@sysblink-db.ctlnpjonf5zy.eu-central-1.rds.amazonaws.com:5432/api_prod
+```
+
+Secret key
+```
+rVjWSl4XmXA1N52EsaPv70bbxdelzGKs
+```
+
+## Create task definitions for api and client
+
+## Create project cluster
+
+

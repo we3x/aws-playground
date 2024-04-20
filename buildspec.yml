@@ -2,8 +2,8 @@ version: 0.2
 
 env:
   variables:
-    AWS_REGION: "eu-central-1"
-    REACT_APP_API_SERVICE_URL: "sysblink-alb-200129705.eu-central-1.elb.amazonaws.com"
+    AWS_REGION: "eu-west-3"
+    REACT_APP_API_SERVICE_URL: "sysblink-alb-852519821.eu-west-3.elb.amazonaws.com"
 
 phases:
   pre_build:

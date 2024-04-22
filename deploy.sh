@@ -38,7 +38,7 @@ deploy_cluster() {
   register_definition
 
   # client
-  service="client"
+  service="client-service"
   template="ecs_client_taskdefinition.json"
   task_template=$(cat "ecs/$template")
   task_def=$(printf "$task_template" $AWS_ACCOUNT_ID)

@@ -45,7 +45,7 @@ class App extends Component {
 
   addUser = (data) => {
     axios
-      .post(`${process.env.REACT_APP_API_SERVICE_URL}/users`, data)
+      .post(`${process.env.REACT_APP_API_SERVICE_URL}/api/users`, data)
       .then((res) => {
         this.getUsers();
         this.setState({ username: "", email: "" });
@@ -71,7 +71,7 @@ class App extends Component {
 
   getUsers = () => {
     axios
-      .get(`${process.env.REACT_APP_API_SERVICE_URL}/users`)
+      .get(`${process.env.REACT_APP_API_SERVICE_URL}/api/users`)
       .then((res) => {
         this.setState({ users: res.data });
       })

@@ -226,6 +226,34 @@ $ docker push 027485240632.dkr.ecr.eu-central-1.amazonaws.com/sysblink-client:pr
 
 
 ###  Needs to create ALB
+```
+name: sysblink-alb
+scheme: internet-facing
+address type: ipv4
+
+- attach new security group
+
+-- inbound rules:
+0.0.0.0:80 -> 0.0.0.0/0 // HTTP
+0.0.0.0:22 -> 0.0.0.0/0 // SSH
+
+- add Listener for HTTP:80
+
+- create new target group
+name: client-target-group
+port: 80
+health checks: /
+
+name: api-target-group
+port: 5000
+health checks: /ping
+
+- review and create alb
+
+- post creation:
+
+- add listener roule with condition if pathname is /ping or /doc or /api* redirect to api-target-group
+```
 
 Navigate to Amazon EC2 --> Load Balancers --> Create Load Balancer
 
@@ -257,7 +285,7 @@ aws --region eu-central-1 rds describe-db-instances \
 
 Connection string
 ```
-postgres://webapp:rnPf1FLqNYv3RZMkvD8E@sysblink-db.ctlnpjonf5zy.eu-central-1.rds.amazonaws.com:5432/api_prod
+postgres://webapp:rnPf1FLqNYv3RZMkvD8E@sysblink-db.chsku8uc0yt9.eu-west-3.rds.amazonaws.com:5432/api_prod
 ```
 
 Secret key

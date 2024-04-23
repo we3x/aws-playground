@@ -3,3 +3,5 @@ env
 htmlcov
 .coverage
 node_modules
+
+.terraform*

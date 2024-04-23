@@ -81,7 +81,7 @@ class App extends Component {
   };
 
   handleLoginFormSubmit = (data) => {
-    const url = `${process.env.REACT_APP_API_SERVICE_URL}/auth/login`;
+    const url = `${process.env.REACT_APP_API_SERVICE_URL}/api/auth/login`;
     axios
       .post(url, data)
       .then((res) => {
@@ -97,7 +97,7 @@ class App extends Component {
   };
 
   handleRegisterFormSubmit = (data) => {
-    const url = `${process.env.REACT_APP_API_SERVICE_URL}/auth/register`;
+    const url = `${process.env.REACT_APP_API_SERVICE_URL}/api/auth/register`;
     axios
       .post(url, data)
       .then((res) => {
@@ -140,7 +140,7 @@ class App extends Component {
 
   removeUser = (user_id) => {
     axios
-      .delete(`${process.env.REACT_APP_API_SERVICE_URL}/users/${user_id}`)
+      .delete(`${process.env.REACT_APP_API_SERVICE_URL}/api/users/${user_id}`)
       .then((res) => {
         this.getUsers();
         this.createMessage("success", "User removed.");
@@ -155,7 +155,7 @@ class App extends Component {
     const token = window.localStorage.getItem("refreshToken");
     if (token) {
       axios
-        .post(`${process.env.REACT_APP_API_SERVICE_URL}/auth/refresh`, {
+        .post(`${process.env.REACT_APP_API_SERVICE_URL}/api/auth/refresh`, {
           refresh_token: token,
         })
         .then((res) => {

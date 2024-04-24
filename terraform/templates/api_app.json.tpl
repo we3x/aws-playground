@@ -27,6 +27,14 @@
       {
         "name": "DATABASE_URL",
         "value": "${database_url}"
+      },
+      {
+        "name": "REDIS_URL",
+        "value": "${redis_url}"
+      },
+      {
+        "name": "AWS_STORAGE_BUCKET_NAME",
+        "value":" "${bucket_url}"
       }
     ],
     "command": [

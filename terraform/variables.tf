@@ -62,13 +62,13 @@ variable "ecs_cluster_name" {
   description = "Name of the ECS cluster"
   default     = "sysblink-production"
 }
-variable "docker_image_url_client" {
-  description = "Docker client image to run in the ECS cluster"
-  default     = "027485240632.dkr.ecr.eu-west-3.amazonaws.com/sysblink-client:prod"
+variable "client_registry_name" {
+  description = "Docker client ECR name"
+  default     = "sysblink-client"
 }
-variable "docker_image_url_api" {
-  description = "Docker users image to run in the ECS cluster"
-  default     = "027485240632.dkr.ecr.eu-west-3.amazonaws.com/sysblink-api:prod"
+variable "api_registry_name" {
+  description = "Docker users ECR name"
+  default     = "sysblink-api"
 }
 variable "app_count" {
   description = "Number of Docker containers to run"
@@ -80,6 +80,10 @@ variable "secret_key" {
 }
 
 # rds
+variable "rds_db_identifier" {
+  description = "RDS database name"
+  default     = "sysblink-db-prod"
+}
 variable "rds_db_name" {
   description = "RDS database name"
   default     = "api_prod"
@@ -94,4 +98,19 @@ variable "rds_password" {
 variable "rds_instance_class" {
   description = "RDS instance type"
   default     = "db.t3.micro"
+}
+
+variable "redis_cluster" {
+  description = "redis cluster name"
+  default     = "sysblink-cache-prod"
+}
+
+variable "redis_node_type" {
+  description = "redis instance type"
+  default     = "cache.t3.micro"
+}
+
+variable "s3_bucket" {
+  description = "s3 bucket name"
+  default     = "sysblink-bucket-prod"
 }

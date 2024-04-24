@@ -27,10 +27,10 @@ update_service() {
 
 deploy_cluster() {
 
-  cluster="sysblink-cluster"
+  cluster="sysblink-production-cluster"
 
   # users
-  service="api-service"
+  service="sysblink-production-api-service"
   template="ecs_api_taskdefinition.json"
   task_template=$(cat "ecs/$template")
   task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $AWS_RDS_URI $PRODUCTION_SECRET_KEY)
@@ -38,7 +38,7 @@ deploy_cluster() {
   register_definition
 
   # client
-  service="client-service"
+  service="sysblink-production-client-service"
   template="ecs_client_taskdefinition.json"
   task_template=$(cat "ecs/$template")
   task_def=$(printf "$task_template" $AWS_ACCOUNT_ID)
@@ -46,8 +46,8 @@ deploy_cluster() {
   register_definition
 
   update_service
-
 }
+
 
 configure_aws_cli
 deploy_cluster

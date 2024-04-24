@@ -43,8 +43,8 @@ resource "aws_ecs_task_definition" "api-app" {
   network_mode             = "awsvpc"
   memory                   = "512"
   cpu                      = "256"
+  depends_on               = [aws_db_instance.production, aws_elasticache_cluster.production-cache, aws_s3_bucket.sysblink-bucket]
   container_definitions    = data.template_file.api-app.rendered
-  depends_on               = [ aws_db_instance.production, aws_elasticache_cluster.production-cache, aws_s3_bucket.sysblink-bucket ]
 }
 
 resource "aws_ecs_service" "client-prod-service" {

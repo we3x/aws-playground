@@ -34,7 +34,7 @@
       },
       {
         "name": "AWS_STORAGE_BUCKET_NAME",
-        "value":" "${bucket_url}"
+        "value": "${bucket_url}"
       }
     ],
     "command": [

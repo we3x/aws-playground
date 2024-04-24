@@ -6,7 +6,7 @@ data "template_file" "client-app" {
   template = file("templates/client_app.json.tpl")
 
   vars = {
-    docker_image_url_client = var.docker_image_url_client
+    docker_image_url_client = "${aws_ecr_repository.client-repository.repository_url}:prod"
     region                  = var.region
   }
 }
@@ -15,10 +15,12 @@ data "template_file" "api-app" {
   template = file("templates/api_app.json.tpl")
 
   vars = {
-    docker_image_url_api   = var.docker_image_url_api
+    docker_image_url_api   = "${aws_ecr_repository.api-repository.repository_url}:prod"
     region                 = var.region
     secret_key             = var.secret_key
-    database_url           = "postgres://webapp:${var.rds_password}@${aws_db_instance.production.endpoint}/api_prod"
+    database_url           = "postgres://${var.rds_username}:${var.rds_password}@${aws_db_instance.production.endpoint}/api_prod"
+    redis_url              = "redis://${aws_elasticache_cluster.production-cache.cache_nodes[0].address}:6379"
+    bucket_url             = aws_s3_bucket.sysblink-bucket.bucket_regional_domain_name
   }
 }
 
@@ -42,7 +44,7 @@ resource "aws_ecs_task_definition" "api-app" {
   memory                   = "512"
   cpu                      = "256"
   container_definitions    = data.template_file.api-app.rendered
-  depends_on               = [aws_db_instance.production]
+  depends_on               = [ aws_db_instance.production, aws_elasticache_cluster.production-cache, aws_s3_bucket.sysblink-bucket ]
 }
 
 resource "aws_ecs_service" "client-prod-service" {

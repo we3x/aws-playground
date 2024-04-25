@@ -20,9 +20,6 @@ env:
   API_CONTAINER_NAME: ${{ secrets.CLIENT_CONTAINER_NAME }}
 
 
-permissions:
-  contents: read
-
 jobs:
   deploy-api:
     name: Deploy Api

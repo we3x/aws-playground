@@ -10,15 +10,15 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   REACT_APP_API_SERVICE_URL: ${{ secrets.REACT_APP_API_SERVICE_URL}}
   
-  ECS_CLUSTER: ${{ secrets.ECS_CLUSTER_NAME }}
+  ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
   
-  ECR_CLIENT_REPOSITORY: ${{ secrets.CLIENT_ECR_REPOSITORY }} 
-  ECS_CLIENT_SERVICE: ${{ secrets.CLIENT_SERVICE_NAME }}
+  ECR_CLIENT_REPOSITORY: ${{ secrets.ECR_CLIENT_REPOSITORY }} 
+  ECS_CLIENT_SERVICE: ${{ secrets.ECS_CLIENT_SERVICE }}
   CLIENT_CONTAINER_NAME: ${{ secrets.CLIENT_CONTAINER_NAME }}
   
-  ECR_API_REPOSITORY: ${{ secrets.CLIENT_ECR_REPOSITORY }}
-  ECS_API_SERVICE: ${{ secrets.API_SERVICE_NAME }}
-  API_CONTAINER_NAME: ${{ secrets.CLIENT_CONTAINER_NAME }}
+  ECR_API_REPOSITORY: ${{ secrets.CLIENT_CONTAINER_NAME }}
+  ECS_API_SERVICE: ${{ secrets.ECS_API_SERVICE }}
+  API_CONTAINER_NAME: ${{ secrets.API_CONTAINER_NAME }}
   
 jobs:
   deploy-api:
@@ -96,7 +96,7 @@ jobs:
         IMAGE_TAG: prod
       run: |
         docker build \
-          -t ${{ env.ECR_API_REPOSITORY }}:$IMAGE_TAG \
+          -t ${{ env.ECR_CLIENT_REPOSITORY }}:$IMAGE_TAG \
           -f services/users/Dockerfile.prod ./services/client \
           --build-arg NODE_ENV=production \
           --build-arg REACT_APP_API_SERVICE_URL=${{ env.REACT_APP_API_SERVICE_URL }} 

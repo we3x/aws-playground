@@ -2,37 +2,18 @@ resource "aws_ecs_cluster" "production" {
   name = "${var.ecs_cluster_name}-cluster"
 }
 
-data "template_file" "client-app" {
-  template = file("templates/client_app.json.tpl")
-
-  vars = {
-    docker_image_url_client = "${aws_ecr_repository.client-repository.repository_url}:prod"
-    region                  = var.region
-  }
-}
-
-data "template_file" "api-app" {
-  template = file("templates/api_app.json.tpl")
-
-  vars = {
-    docker_image_url_api   = "${aws_ecr_repository.api-repository.repository_url}:prod"
-    region                 = var.region
-    secret_key             = var.secret_key
-    database_url           = "postgres://${var.rds_username}:${var.rds_password}@${aws_db_instance.production.endpoint}/api_prod"
-    redis_url              = "redis://${aws_elasticache_cluster.production-cache.cache_nodes[0].address}:6379"
-    bucket_url             = aws_s3_bucket.sysblink-bucket.bucket_regional_domain_name
-  }
-}
-
 resource "aws_ecs_task_definition" "client-app" {
-  family                   = "client-app"
-  task_role_arn            = aws_iam_role.ecs-host-role.arn
-  execution_role_arn       = aws_iam_role.ecs-host-role.arn
-  requires_compatibilities = ["FARGATE"]
-  network_mode             = "awsvpc"
-  memory                   = "512"
-  cpu                      = "256"
-  container_definitions    = data.template_file.client-app.rendered
+  family                    = "client-app"
+  task_role_arn             = aws_iam_role.ecs-host-role.arn
+  execution_role_arn        = aws_iam_role.ecs-host-role.arn
+  requires_compatibilities  = ["FARGATE"]
+  network_mode              = "awsvpc"
+  memory                    = "512"
+  cpu                       = "256"
+  container_definitions     = templatefile("templates/client_app.json.tftpl", {
+    docker_image_url_client = "${aws_ecr_repository.client-repository.repository_url}:prod"
+    region                  = "${var.region}"
+  })
 }
 
 resource "aws_ecs_task_definition" "api-app" {
@@ -44,7 +25,14 @@ resource "aws_ecs_task_definition" "api-app" {
   memory                   = "512"
   cpu                      = "256"
   depends_on               = [aws_db_instance.production, aws_elasticache_cluster.production-cache, aws_s3_bucket.sysblink-bucket]
-  container_definitions    = data.template_file.api-app.rendered
+  container_definitions    = templatefile("templates/api_app.json.tftpl", {
+    docker_image_url_api   = "${aws_ecr_repository.api-repository.repository_url}:prod"
+    region                 = "${var.region}"
+    secret_key             = "${var.secret_key}"
+    database_url           = "postgres://${var.rds_username}:${var.rds_password}@${aws_db_instance.production.endpoint}/api_prod"
+    redis_url              = "redis://${aws_elasticache_cluster.production-cache.cache_nodes[0].address}:6379"
+    bucket_url             = "${aws_s3_bucket.sysblink-bucket.bucket_regional_domain_name}"
+  })
 }
 
 resource "aws_ecs_service" "client-prod-service" {

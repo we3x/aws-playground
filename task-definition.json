@@ -1,0 +1,113 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:eu-west-3:027485240632:task-definition/api-app:20",
+    "containerDefinitions": [
+        {
+            "name": "api-app",
+            "image": "027485240632.dkr.ecr.eu-west-3.amazonaws.com/sysblink-api:prod",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "containerPort": 5000,
+                    "hostPort": 5000,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "entryPoint": [
+                "/usr/src/app/entrypoint.prod.sh"
+            ],
+            "command": [
+                "gunicorn",
+                "manage:app",
+                "-b",
+                ":5000",
+                "-w",
+                "3",
+                "--log-level=debug"
+            ],
+            "environment": [
+                {
+                    "name": "DATABASE_TEST_URL",
+                    "value": "postgres://postgres:postgres@api-db:5432/api_test"
+                },
+                {
+                    "name": "SECRET_KEY",
+                    "value": "IrlXZemJhdSYzNcHsLbTGyMURVhWY56T"
+                },
+                {
+                    "name": "DATABASE_URL",
+                    "value": "postgres://webapp:rnPf1FLqNYv3RZMkvD8E@sysblink-db-prod.chsku8uc0yt9.eu-west-3.rds.amazonaws.com:5432/api_prod"
+                },
+                {
+                    "name": "APP_SETTINGS",
+                    "value": "src.config.ProductionConfig"
+                },
+                {
+                    "name": "AWS_STORAGE_BUCKET_NAME",
+                    "value": "sysblink-bucket-prod.s3.eu-west-3.amazonaws.com"
+                },
+                {
+                    "name": "REDIS_URL",
+                    "value": "redis://sysblink-cache-prod.6fz7w9.0001.euw3.cache.amazonaws.com:6379"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/api-app",
+                    "awslogs-region": "eu-west-3",
+                    "awslogs-stream-prefix": "api-app-log-stream"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "api-app",
+    "taskRoleArn": "arn:aws:iam::027485240632:role/ecs_host_role_prod",
+    "executionRoleArn": "arn:aws:iam::027485240632:role/ecs_host_role_prod",
+    "networkMode": "awsvpc",
+    "revision": 20,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "registeredAt": "2024-04-25T14:07:29.613000+02:00",
+    "registeredBy": "arn:aws:iam::027485240632:root"
+}

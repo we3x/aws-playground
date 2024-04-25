@@ -46,7 +46,7 @@ jobs:
       env:
         IMAGE_TAG: prod
       run: |
-        docker build -t ${{ env.ECR_API_REPOSITORY }}:$IMAGE_TAG -f services/users/Dockerfile.prod ./services/users
+        docker build -t ${{ steps.login-ecr.outputs.registry }}/sysblink-api:$IMAGE_TAG -f services/users/Dockerfile.prod ./services/users
         docker push ${{ env.ECR_API_REPOSITORY }}:$IMAGE_TAG
         echo "image=${{ env.ECR_API_REPOSITORY }}:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
@@ -96,8 +96,8 @@ jobs:
         IMAGE_TAG: prod
       run: |
         docker build \
-          -t ${{ env.ECR_CLIENT_REPOSITORY }}:$IMAGE_TAG \
-          -f services/users/Dockerfile.prod ./services/client \
+          -t ${{ steps.login-ecr.outputs.registry }}/sysblink-client:$IMAGE_TAG \
+          -f services/client/Dockerfile.prod ./services/client \
           --build-arg NODE_ENV=production \
           --build-arg REACT_APP_API_SERVICE_URL=${{ env.REACT_APP_API_SERVICE_URL }} 
         docker push ${{ env.ECR_CLIENT_REPOSITORY }}:$IMAGE_TAG

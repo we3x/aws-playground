@@ -20,8 +20,6 @@ env:
   ECS_API_SERVICE: ${{ secrets.API_SERVICE_NAME }}
   API_CONTAINER_NAME: ${{ secrets.CLIENT_CONTAINER_NAME }}
   
-
-
 jobs:
   deploy-api:
     name: Deploy Api
@@ -48,9 +46,9 @@ jobs:
       env:
         IMAGE_TAG: prod
       run: |
-        docker build -t $ECR_API_REPOSITORY:$IMAGE_TAG -f services/users/Dockerfile.prod ./services/users
-        docker push $ECR_API_REPOSITORY:$IMAGE_TAG
-        echo "image=$ECR_API_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+        docker build -t ${{ env.ECR_API_REPOSITORY }}:$IMAGE_TAG -f services/users/Dockerfile.prod ./services/users
+        docker push ${{ env.ECR_API_REPOSITORY }}:$IMAGE_TAG
+        echo "image=${{ env.ECR_API_REPOSITORY }}:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
@@ -98,12 +96,12 @@ jobs:
         IMAGE_TAG: prod
       run: |
         docker build \
-          -t $ECR_API_REPOSITORY:$IMAGE_TAG \
+          -t ${{ env.ECR_API_REPOSITORY }}:$IMAGE_TAG \
           -f services/users/Dockerfile.prod ./services/client \
           --build-arg NODE_ENV=production \
-          --build-arg REACT_APP_API_SERVICE_URL=${REACT_APP_API_SERVICE_URL} 
-        docker push $ECR_CLIENT_REPOSITORY:$IMAGE_TAG
-        echo "image=$ECR_CLIENT_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          --build-arg REACT_APP_API_SERVICE_URL=${{ env.REACT_APP_API_SERVICE_URL }} 
+        docker push ${{ env.ECR_CLIENT_REPOSITORY }}:$IMAGE_TAG
+        echo "image=${{ env.ECR_CLIENT_REPOSITORY }}:$IMAGE_TAG" >> $GITHUB_OUTPUT
         
     - name: Download client task definition
       run: |

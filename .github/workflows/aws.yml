@@ -11,14 +11,8 @@ env:
   REACT_APP_API_SERVICE_URL: ${{ secrets.REACT_APP_API_SERVICE_URL}}
   
   ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
-  
-  ECR_CLIENT_REPOSITORY: ${{ secrets.ECR_CLIENT_REPOSITORY }} 
   ECS_CLIENT_SERVICE: ${{ secrets.ECS_CLIENT_SERVICE }}
-  CLIENT_CONTAINER_NAME: ${{ secrets.CLIENT_CONTAINER_NAME }}
-  
-  ECR_API_REPOSITORY: ${{ secrets.CLIENT_CONTAINER_NAME }}
   ECS_API_SERVICE: ${{ secrets.ECS_API_SERVICE }}
-  API_CONTAINER_NAME: ${{ secrets.API_CONTAINER_NAME }}
   
 jobs:
   deploy-api:
@@ -59,7 +53,7 @@ jobs:
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: task-definition.json
-        container-name: ${{ env.API_CONTAINER_NAME }}
+        container-name: api-app
         image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
@@ -112,7 +106,7 @@ jobs:
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: task-definition.json
-        container-name: ${{ env.CLIENT_CONTAINER_NAME }}
+        container-name: client-app
         image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition

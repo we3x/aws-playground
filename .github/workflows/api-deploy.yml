@@ -1,4 +1,4 @@
-name: Deploy Api and Client to ECS
+name: Deploy Api to ECS
 
 on:
   push:

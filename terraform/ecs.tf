@@ -11,7 +11,7 @@ resource "aws_ecs_task_definition" "client-app" {
   memory                    = "512"
   cpu                       = "256"
   container_definitions     = templatefile("templates/client_app.json.tftpl", {
-    docker_image_url_client = "${aws_ecr_repository.client-repository.repository_url}:prod"
+    docker_image_url_client = "${module.registry.client_url}:prod"
     region                  = "${var.region}"
   })
 }
@@ -26,7 +26,7 @@ resource "aws_ecs_task_definition" "api-app" {
   cpu                      = "256"
   depends_on               = [aws_db_instance.production, aws_elasticache_cluster.production-cache, module.public-bucket]
   container_definitions    = templatefile("templates/api_app.json.tftpl", {
-    docker_image_url_api   = "${aws_ecr_repository.api-repository.repository_url}:prod"
+    docker_image_url_api   = "${module.registry.api_url}:prod"
     region                 = "${var.region}"
     secret_key             = "${var.secret_key}"
     database_url           = "postgres://${var.rds_username}:${var.rds_password}@${aws_db_instance.production.endpoint}/api_prod"

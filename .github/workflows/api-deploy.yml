@@ -1,0 +1,63 @@
+name: Deploy Api and Client to ECS
+
+on:
+  push:
+    tags:
+      - 'api*'
+      - 'release*'
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
+  ECS_API_SERVICE: ${{ secrets.ECS_API_SERVICE }}
+  
+jobs:
+  deploy-api:
+    name: Deploy Api
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        IMAGE_TAG: prod
+      run: |
+        docker build -t ${{ steps.login-ecr.outputs.registry }}/sysblink-api:$IMAGE_TAG -f services/users/Dockerfile.prod ./services/users
+        docker push ${{ steps.login-ecr.outputs.registry }}/sysblink-api:$IMAGE_TAG
+        echo "image=${{ steps.login-ecr.outputs.registry }}/sysblink-api:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+    - name: Download api task definition
+      run: |
+        aws ecs describe-task-definition --task-definition api-app --query taskDefinition > task-definition.json
+
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: task-definition.json
+        container-name: api-app
+        image: ${{ steps.build-image.outputs.image }}
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ env.ECS_API_SERVICE }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true

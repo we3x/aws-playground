@@ -10,9 +10,8 @@ app = create_app()
 cli = FlaskGroup(create_app=create_app)
 
 
-@cli.command('recreate_db')
-def recreate_db():
-    db.drop_all()
+@cli.command('create_db')
+def create_db():
     db.create_all()
     db.session.commit()
 

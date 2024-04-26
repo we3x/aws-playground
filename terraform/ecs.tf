@@ -24,14 +24,14 @@ resource "aws_ecs_task_definition" "api-app" {
   network_mode             = "awsvpc"
   memory                   = "512"
   cpu                      = "256"
-  depends_on               = [aws_db_instance.production, aws_elasticache_cluster.production-cache, aws_s3_bucket.sysblink-bucket]
+  depends_on               = [aws_db_instance.production, aws_elasticache_cluster.production-cache, module.public-bucket]
   container_definitions    = templatefile("templates/api_app.json.tftpl", {
     docker_image_url_api   = "${aws_ecr_repository.api-repository.repository_url}:prod"
     region                 = "${var.region}"
     secret_key             = "${var.secret_key}"
     database_url           = "postgres://${var.rds_username}:${var.rds_password}@${aws_db_instance.production.endpoint}/api_prod"
     redis_url              = "redis://${aws_elasticache_cluster.production-cache.cache_nodes[0].address}:6379"
-    bucket_url             = "${aws_s3_bucket.sysblink-bucket.bucket_regional_domain_name}"
+    bucket_url             = "${module.public-bucket.bucket_dns}"
   })
 }
 

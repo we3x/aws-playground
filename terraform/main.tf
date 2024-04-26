@@ -1,0 +1,5 @@
+module "public-bucket" {
+    source = "./modules/s3"
+
+    bucket_name = var.s3_bucket
+}

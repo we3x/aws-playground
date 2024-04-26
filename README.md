@@ -298,3 +298,6 @@ rVjWSl4XmXA1N52EsaPv70bbxdelzGKs
 ## Create project cluster
 
 
+terraform apply && terraform output > ../.env.terraform
+
+gh secret set -f ../.env.terraform

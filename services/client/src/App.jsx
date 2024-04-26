@@ -31,7 +31,7 @@ class App extends Component {
 
     this.state = {
       users: [],
-      title: "AWS playground Mastered Production",
+      title: "AWS playground automatised Production",
       accessToken: null,
       messageType: null,
       messageText: null,

@@ -100,6 +100,7 @@ variable "rds_instance_class" {
   default     = "db.t3.micro"
 }
 
+# redis
 variable "redis_cluster" {
   description = "redis cluster name"
   default     = "sysblink-cache-prod"
@@ -110,6 +111,7 @@ variable "redis_node_type" {
   default     = "cache.t3.micro"
 }
 
+# s3
 variable "s3_bucket" {
   description = "s3 bucket name"
   default     = "sysblink-bucket-prod"

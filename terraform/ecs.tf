@@ -24,12 +24,12 @@ resource "aws_ecs_task_definition" "api-app" {
   network_mode             = "awsvpc"
   memory                   = "512"
   cpu                      = "256"
-  depends_on               = [aws_db_instance.production, aws_elasticache_cluster.production-cache, module.public-bucket]
+  depends_on               = [module.rds.instance, aws_elasticache_cluster.production-cache, module.public-bucket]
   container_definitions    = templatefile("templates/api_app.json.tftpl", {
     docker_image_url_api   = "${module.registry.api_url}:prod"
     region                 = "${var.region}"
     secret_key             = "${var.secret_key}"
-    database_url           = "postgres://${var.rds_username}:${var.rds_password}@${aws_db_instance.production.endpoint}/api_prod"
+    database_url           = "postgres://${var.rds_username}:${var.rds_password}@${module.rds.instance.endpoint}/api_prod"
     redis_url              = "redis://${aws_elasticache_cluster.production-cache.cache_nodes[0].address}:6379"
     bucket_url             = "${module.public-bucket.bucket_dns}"
   })
@@ -51,7 +51,7 @@ resource "aws_ecs_service" "client-prod-service" {
 
   network_configuration {
     security_groups  = [aws_security_group.ecs.id]
-    subnets          = [aws_subnet.public-subnet-1.id, aws_subnet.public-subnet-2.id]
+    subnets          = module.network.public_subnets
     assign_public_ip = true
   }
 }
@@ -72,7 +72,7 @@ resource "aws_ecs_service" "api-prod-service" {
 
   network_configuration {
     security_groups  = [aws_security_group.ecs.id]
-    subnets          = [aws_subnet.public-subnet-1.id, aws_subnet.public-subnet-2.id]
+    subnets          = module.network.public_subnets
     assign_public_ip = true
   }
 }

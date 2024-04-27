@@ -101,7 +101,7 @@ variable "rds_instance_class" {
 }
 
 # redis
-variable "redis_cluster" {
+variable "redis_cluster_name" {
   description = "redis cluster name"
   default     = "sysblink-cache-prod"
 }
@@ -109,6 +109,11 @@ variable "redis_cluster" {
 variable "redis_node_type" {
   description = "redis instance type"
   default     = "cache.t3.micro"
+}
+
+variable "redis_port" {
+  description = "redis port"
+  default     = 6379
 }
 
 # s3

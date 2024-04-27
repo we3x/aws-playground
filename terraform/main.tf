@@ -32,3 +32,11 @@ module "rds" {
     db_subnets              = module.network.private_subnets
     security_groups         = [aws_security_group.rds.id]
 }
+
+module "redis" {
+    source                  = "./modules/redis"
+
+    cluster_name            = var.redis_cluster_name
+    node_type               = var.redis_node_type
+    port                    = var.redis_port
+}

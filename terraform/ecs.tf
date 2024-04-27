@@ -4,8 +4,8 @@ resource "aws_ecs_cluster" "production" {
 
 resource "aws_ecs_task_definition" "client-app" {
   family                    = "client-app"
-  task_role_arn             = aws_iam_role.ecs-host-role.arn
-  execution_role_arn        = aws_iam_role.ecs-host-role.arn
+  task_role_arn             = module.iam.ecs-host-role-arn
+  execution_role_arn        = module.iam.ecs-host-role-arn
   requires_compatibilities  = ["FARGATE"]
   network_mode              = "awsvpc"
   memory                    = "512"
@@ -18,8 +18,8 @@ resource "aws_ecs_task_definition" "client-app" {
 
 resource "aws_ecs_task_definition" "api-app" {
   family                   = "api-app"
-  task_role_arn            = aws_iam_role.ecs-host-role.arn
-  execution_role_arn       = aws_iam_role.ecs-host-role.arn
+  task_role_arn            = module.iam.ecs-host-role-arn
+  execution_role_arn       = module.iam.ecs-host-role-arn
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   memory                   = "512"
@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "api-app" {
     region                 = "${var.region}"
     secret_key             = "${var.secret_key}"
     database_url           = "postgres://${var.rds_username}:${var.rds_password}@${module.rds.instance.endpoint}/api_prod"
-    redis_url              = "redis://${module.redis.address}:${var.redis_port}"
+    redis_url              = "redis://${module.redis.address}:"
     bucket_url             = "${module.public-bucket.bucket_dns}"
   })
 }
@@ -40,7 +40,7 @@ resource "aws_ecs_service" "client-prod-service" {
   cluster         = aws_ecs_cluster.production.id
   task_definition = aws_ecs_task_definition.client-app.arn
   desired_count   = var.app_count
-  depends_on      = [aws_alb_listener.ecs-alb-http-listener, aws_iam_role_policy.ecs-service-role-policy]
+  depends_on      = [aws_alb_listener.ecs-alb-http-listener, module.iam.ecs-service-role-policy]
   launch_type     = "FARGATE"
 
   load_balancer {
@@ -61,7 +61,7 @@ resource "aws_ecs_service" "api-prod-service" {
   cluster         = aws_ecs_cluster.production.id
   task_definition = aws_ecs_task_definition.api-app.arn
   desired_count   = var.app_count
-  depends_on      = [aws_alb_listener.ecs-alb-http-listener, aws_iam_role_policy.ecs-service-role-policy]
+  depends_on      = [aws_alb_listener.ecs-alb-http-listener, module.iam.ecs-service-role-policy]
   launch_type     = "FARGATE"
 
   load_balancer {

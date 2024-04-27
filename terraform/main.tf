@@ -44,3 +44,10 @@ module "redis" {
   node_type               = var.redis_node_type
   port                    = var.redis_port
 }
+
+module "keys" {
+  source                  = "./modules/keypair"
+
+  key_pair_name           = "${var.ecs_cluster_name}_key_pair"
+  ssh_pubkey_file         = var.ssh_pubkey_file
+}

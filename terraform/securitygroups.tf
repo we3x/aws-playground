@@ -2,7 +2,7 @@
 resource "aws_security_group" "load-balancer" {
   name        = "load_balancer_security_group"
   description = "Controls access to the ALB"
-  vpc_id      = aws_vpc.production-vpc.id
+  vpc_id      = module.network.vpc
 
   ingress {
     from_port   = 80
@@ -23,7 +23,7 @@ resource "aws_security_group" "load-balancer" {
 resource "aws_security_group" "ecs" {
   name        = "ecs_security_group"
   description = "Allows inbound access from the ALB only"
-  vpc_id      = aws_vpc.production-vpc.id
+  vpc_id      = module.network.vpc
 
   ingress {
     from_port       = 0
@@ -44,7 +44,7 @@ resource "aws_security_group" "ecs" {
 resource "aws_security_group" "rds" {
   name        = "rds-security-group"
   description = "Allows inbound access from ECS only"
-  vpc_id      = aws_vpc.production-vpc.id
+  vpc_id      = module.network.vpc
 
   ingress {
     protocol        = "tcp"

@@ -4,7 +4,7 @@ resource "aws_lb" "production" {
   load_balancer_type = "application"
   internal           = false
   security_groups    = [aws_security_group.load-balancer.id]
-  subnets            = [aws_subnet.public-subnet-1.id, aws_subnet.public-subnet-2.id]
+  subnets            = module.network.public_subnets
 }
 
 # Target group client
@@ -12,7 +12,7 @@ resource "aws_alb_target_group" "default-target-group" {
   name        = "${var.ecs_cluster_name}-client-tg"
   port        = 80
   protocol    = "HTTP"
-  vpc_id      = aws_vpc.production-vpc.id
+  vpc_id      = module.network.vpc
   target_type = "ip"
 
   health_check {
@@ -31,7 +31,7 @@ resource "aws_alb_target_group" "api-target-group" {
   name        = "${var.ecs_cluster_name}-api-tg"
   port        = 5000
   protocol    = "HTTP"
-  vpc_id      = aws_vpc.production-vpc.id
+  vpc_id      = module.network.vpc
   target_type = "ip"
 
   health_check {

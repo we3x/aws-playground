@@ -51,3 +51,12 @@ module "keys" {
   key_pair_name           = "${var.ecs_cluster_name}_key_pair"
   ssh_pubkey_file         = var.ssh_pubkey_file
 }
+
+module "logs" {
+  source                  = "./modules/logs"
+  
+  api_group_name          = var.logs_api_group_name
+  api_stream_name         = var.logs_api_stream_name
+  client_group_name       = var.logs_client_group_name
+  client_stream_name      = var.logs_client_stream_name
+}

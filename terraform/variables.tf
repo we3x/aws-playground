@@ -121,3 +121,24 @@ variable "s3_bucket" {
   description = "s3 bucket name"
   default     = "sysblink-bucket-prod"
 }
+
+# logs
+variable "logs_client_group_name" {
+  description = "Client log group name"
+  default     = "/ecs/client_app"
+}
+
+variable "logs_api_group_name" {
+  description = "Api log group name"
+  default     = "/ecs/api_app"
+}
+
+variable "logs_client_stream_name" {
+  description = "Client log stream name"
+  default     = "client-app-log-stream"
+}
+
+variable "logs_api_stream_name" {
+  description = "Api log stream name"
+  default     = "api-app-log-stream"
+}
